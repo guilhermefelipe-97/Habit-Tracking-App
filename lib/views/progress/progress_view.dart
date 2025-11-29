@@ -22,166 +22,170 @@ class _ProgressViewState extends State<ProgressView> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ProgressViewModel(),
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          title: Text(
-            'Progresso Visual',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          'Progresso Visual',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[800],
           ),
         ),
-        body: SingleChildScrollView(
-          child: Consumer<ProgressViewModel>(
-            builder: (context, viewModel, _) {
-              if (viewModel.isLoading) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(32.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
+      ),
+      body: SingleChildScrollView(
+        child: Consumer<ProgressViewModel>(
+          builder: (context, viewModel, _) {
+            if (viewModel.isLoading) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Seletor de Período
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Seletor de Período
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      _PeriodButton(
+                        label: 'Semana',
+                        value: 'week',
+                        isSelected: _selectedPeriod == 'week',
+                        onTap: () {
+                          setState(() => _selectedPeriod = 'week');
+                          viewModel.loadProgressData('week');
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      _PeriodButton(
+                        label: 'Mês',
+                        value: 'month',
+                        isSelected: _selectedPeriod == 'month',
+                        onTap: () {
+                          setState(() => _selectedPeriod = 'month');
+                          viewModel.loadProgressData('month');
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      _PeriodButton(
+                        label: 'Ano',
+                        value: 'year',
+                        isSelected: _selectedPeriod == 'year',
+                        onTap: () {
+                          setState(() => _selectedPeriod = 'year');
+                          viewModel.loadProgressData('year');
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Estatísticas Gerais
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _PeriodButton(
-                          label: 'Semana',
-                          value: 'week',
-                          isSelected: _selectedPeriod == 'week',
-                          onTap: () {
-                            setState(() => _selectedPeriod = 'week');
-                            viewModel.loadProgressData('week');
-                          },
+                        Text(
+                          'Estatísticas',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(width: 8),
-                        _PeriodButton(
-                          label: 'Mês',
-                          value: 'month',
-                          isSelected: _selectedPeriod == 'month',
-                          onTap: () {
-                            setState(() => _selectedPeriod = 'month');
-                            viewModel.loadProgressData('month');
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        _PeriodButton(
-                          label: 'Ano',
-                          value: 'year',
-                          isSelected: _selectedPeriod == 'year',
-                          onTap: () {
-                            setState(() => _selectedPeriod = 'year');
-                            viewModel.loadProgressData('year');
-                          },
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _StatCard(
+                              label: 'Total de Hábitos',
+                              value: viewModel.totalHabits.toString(),
+                              icon: Icons.check_circle,
+                              color: Colors.teal,
+                            ),
+                            _StatCard(
+                              label: 'Taxa de Conclusão',
+                              value:
+                              '${viewModel.completionRate.toStringAsFixed(0)}%',
+                              icon: Icons.trending_up,
+                              color: Colors.blue,
+                            ),
+                            _StatCard(
+                              label: 'Melhor Sequência',
+                              value: '${viewModel.bestStreak} dias',
+                              icon: Icons.local_fire_department,
+                              color: Colors.orange,
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
+                ),
+                const SizedBox(height: 20),
 
-                  // Estatísticas Gerais
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Estatísticas',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _StatCard(
-                                label: 'Total de Hábitos',
-                                value: viewModel.totalHabits.toString(),
-                                icon: Icons.check_circle,
-                                color: Colors.teal,
-                              ),
-                              _StatCard(
-                                label: 'Taxa de Conclusão',
-                                value: '${viewModel.completionRate.toStringAsFixed(0)}%',
-                                icon: Icons.trending_up,
-                                color: Colors.blue,
-                              ),
-                              _StatCard(
-                                label: 'Melhor Sequência',
-                                value: '${viewModel.bestStreak} dias',
-                                icon: Icons.local_fire_department,
-                                color: Colors.orange,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                // Gráfico de Progresso
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _selectedPeriod == 'year'
+                              ? 'Progresso por Mês'
+                              : 'Progresso por Dia',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 20),
+                        _ProgressChart(
+                          data: viewModel.dailyProgressData,
+                          period: _selectedPeriod,
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 20),
 
-                  // Gráfico de Barras Semanal
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Progresso por Dia',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          _ProgressChart(
-                            data: viewModel.dailyProgressData,
-                            period: _selectedPeriod,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Calendário
+                // Calendário – só na aba Semana
+                if (_selectedPeriod == 'week')
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
@@ -202,9 +206,10 @@ class _ProgressViewState extends State<ProgressView> {
                         children: [
                           Text(
                             'Calendário de Hábitos',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 20),
                           _HabitCalendar(
@@ -214,40 +219,10 @@ class _ProgressViewState extends State<ProgressView> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-
-                  // Hábitos com Melhor Performance
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Seus Melhores Hábitos',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: viewModel.topHabits.map((habit) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _TopHabitCard(
-                            habitName: habit['name'] as String,
-                            completionRate: habit['completionRate'] as double,
-                            streak: habit['streak'] as int,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-                ],
-              );
-            },
-          ),
+                if (_selectedPeriod == 'week') const SizedBox(height: 20),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -359,7 +334,49 @@ class _ProgressChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double maxValue = data.isEmpty ? 1 : data.reduce((a, b) => a > b ? a : b);
+    // Sem dados
+    if (data.isEmpty) {
+      return const SizedBox(
+        height: 80,
+        child: Center(
+          child: Text(
+            'Sem dados suficientes para este período',
+            style: TextStyle(fontSize: 12),
+          ),
+        ),
+      );
+    }
+
+    // Limita a quantidade de barras exibidas
+    const int maxBars = 14;
+    final List<double> visibleData =
+    data.length > maxBars ? data.sublist(data.length - maxBars) : data;
+
+    double maxValue =
+    visibleData.isEmpty ? 1 : visibleData.reduce((a, b) => a > b ? a : b);
+
+    // Labels
+    List<String> labels;
+    if (period == 'week') {
+      labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
+    } else if (period == 'month') {
+      labels = List.generate(visibleData.length, (i) => '${i + 1}');
+    } else {
+      labels = [
+        'Jan',
+        'Fev',
+        'Mar',
+        'Abr',
+        'Mai',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Set',
+        'Out',
+        'Nov',
+        'Dez'
+      ];
+    }
 
     return SizedBox(
       height: 200,
@@ -367,31 +384,25 @@ class _ProgressChart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(
-          data.length,
-          (index) {
-            double percentage = data[index] / maxValue;
-            List<String> labels = period == 'week'
-                ? ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom']
-                : period == 'month'
-                ? List.generate(data.length, (i) => '${i + 1}')
-                : ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+          visibleData.length,
+              (index) {
+            double percentage = visibleData[index] / maxValue;
 
             return Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Expanded(
-                    child: Container(
-                      width: 24,
-                      decoration: BoxDecoration(
-                        color: Colors.teal[700],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: FractionallySizedBox(
-                          heightFactor: percentage.isNaN ? 0 : percentage,
-                          child: Container(),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: FractionallySizedBox(
+                        heightFactor: percentage.isNaN ? 0 : percentage,
+                        child: Container(
+                          width: 16,
+                          decoration: BoxDecoration(
+                            color: Colors.teal[700],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
                     ),
@@ -424,7 +435,7 @@ class _HabitCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
     DateTime startOfMonth = DateTime(now.year, now.month, 1);
-    
+
     int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     int firstDayOfWeek = startOfMonth.weekday - 1;
 
@@ -439,10 +450,7 @@ class _HabitCalendar extends StatelessWidget {
     for (int day = 1; day <= daysInMonth; day++) {
       DateTime date = DateTime(now.year, now.month, day);
       bool isCompleted = completedDays.any((d) =>
-        d.year == date.year &&
-        d.month == date.month &&
-        d.day == date.day
-      );
+      d.year == date.year && d.month == date.month && d.day == date.day);
 
       calendarDays.add(
         Container(
@@ -532,7 +540,8 @@ class _TopHabitCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.trending_up, size: 14, color: Colors.green),
+                    const Icon(Icons.trending_up,
+                        size: 14, color: Colors.green),
                     const SizedBox(width: 4),
                     Text(
                       '${completionRate.toStringAsFixed(0)}%',
@@ -549,11 +558,12 @@ class _TopHabitCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Icon(Icons.local_fire_department, size: 18, color: Colors.orange),
+              const Icon(Icons.local_fire_department,
+                  size: 18, color: Colors.orange),
               const SizedBox(height: 2),
               Text(
                 '$streak dias',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                   color: Colors.orange,

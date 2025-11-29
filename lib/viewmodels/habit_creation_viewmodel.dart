@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/habit_model.dart';
 import '../repositories/habit_repository.dart';
+import 'package:provider/provider.dart';
+import 'dashboard_viewmodel.dart';
+import '../models/notification_model.dart';
+import '../repositories/notification_repository.dart';
+
+final _notificationRepository = NotificationRepository();
 
 class HabitCreationViewModel extends ChangeNotifier {
   final HabitRepository _habitRepository = HabitRepository();
@@ -43,7 +49,21 @@ class HabitCreationViewModel extends ChangeNotifier {
 
       await _habitRepository.createHabit(habit);
 
+      final notification = HabitNotification(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: 'Novo hábito criado',
+        message: 'Você adicionou o hábito "${habit.name}"',
+        type: 'reminder',
+        isRead: false,
+        createdAt: DateTime.now(),
+      );
+
+      await _notificationRepository.createNotification(notification);
+
       if (context.mounted) {
+        // força recarregar a lista da dashboard
+        await context.read<DashboardViewModel>().loadHabits();
+
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

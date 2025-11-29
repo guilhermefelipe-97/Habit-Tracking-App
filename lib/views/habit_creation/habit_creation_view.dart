@@ -65,9 +65,7 @@ class _HabitCreationViewState extends State<HabitCreationView> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => HabitCreationViewModel(),
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: Colors.grey[50],
         appBar: AppBar(
           elevation: 0,
@@ -383,7 +381,6 @@ class _HabitCreationViewState extends State<HabitCreationView> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

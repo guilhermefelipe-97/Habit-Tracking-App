@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
 
 class RegisterViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
+  final FirestoreService _firestoreService = FirestoreService();
 
   bool _isLoading = false;
   String _errorMessage = '';
@@ -35,7 +36,6 @@ class RegisterViewModel extends ChangeNotifier {
     required String confirmPassword,
     required String displayName,
   }) async {
-    // Validar entradas
     final validationError = _validateInput(
       email: email,
       password: password,
@@ -54,7 +54,6 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Tenta registrar o usuário
       final user = await _authService.register(
         email,
         password,
@@ -62,6 +61,9 @@ class RegisterViewModel extends ChangeNotifier {
       );
 
       if (user != null) {
+        // salva o nome completo no Firestore
+        await _firestoreService.updateUserProfile(name: displayName);
+
         _isLoading = false;
         _errorMessage = '';
         notifyListeners();
@@ -73,7 +75,6 @@ class RegisterViewModel extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      // Captura erro e extrai mensagem
       _errorMessage = _parseError(e.toString());
       _isLoading = false;
       notifyListeners();

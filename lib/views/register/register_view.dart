@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/register_viewmodel.dart';
+import '../../routes/app_routes.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class _RegisterViewState extends State<RegisterView> {
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.teal[700]),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => AppRoutes.goToLogin(context),
         ),
       ),
       body: SingleChildScrollView(
@@ -343,7 +344,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pop(context);
+                      AppRoutes.goToLogin(context);
                     },
                     child: Text(
                       'Faça login',

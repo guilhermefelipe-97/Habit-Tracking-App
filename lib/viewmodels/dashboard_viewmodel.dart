@@ -23,6 +23,7 @@ class DashboardViewModel extends ChangeNotifier {
 
     try {
       _habits = await _habitRepository.getAllHabits();
+      print('Habits carregados: ${_habits.length}');
     } catch (e) {
       print('Erro ao carregar hábitos: $e');
     } finally {
@@ -30,6 +31,7 @@ class DashboardViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 
   Future<void> toggleHabit(String habitId) async {
     try {

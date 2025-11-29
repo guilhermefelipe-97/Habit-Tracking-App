@@ -21,90 +21,88 @@ class _NotificationsViewState extends State<NotificationsView> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => NotificationsViewModel(),
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          title: Text(
-            'Notificações',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          'Notificações',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[800],
           ),
-          actions: [
-            Consumer<NotificationsViewModel>(
-              builder: (context, viewModel, _) {
-                return PopupMenuButton(
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: const Text('Marcar todas como lidas'),
-                      onTap: () => viewModel.markAllAsRead(),
-                    ),
-                    PopupMenuItem(
-                      child: const Text('Limpar notificações'),
-                      onTap: () => viewModel.clearAll(),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
         ),
-        body: Consumer<NotificationsViewModel>(
-          builder: (context, viewModel, _) {
-            if (viewModel.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (viewModel.notifications.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.notifications_none,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Sem notificações',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Você está em dia com todos os seus hábitos!',
-                      style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
+        actions: [
+          Consumer<NotificationsViewModel>(
+            builder: (context, viewModel, _) {
+              return PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: const Text('Marcar todas como lidas'),
+                    onTap: () => viewModel.markAllAsRead(),
+                  ),
+                  PopupMenuItem(
+                    child: const Text('Limpar notificações'),
+                    onTap: () => viewModel.clearAll(),
+                  ),
+                ],
               );
-            }
+            },
+          ),
+        ],
+      ),
+      body: Consumer<NotificationsViewModel>(
+        builder: (context, viewModel, _) {
+          if (viewModel.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            return ListView.builder(
-              itemCount: viewModel.notifications.length,
-              itemBuilder: (context, index) {
-                final notification = viewModel.notifications[index];
-                return NotificationTile(
-                  notification: notification,
-                  onDismiss: () => viewModel.dismissNotification(notification.id),
-                  onTap: () => viewModel.markAsRead(notification.id),
-                );
-              },
+          if (viewModel.notifications.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.notifications_none,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Sem notificações',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Você está em dia com todos os seus hábitos!',
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
             );
-          },
-        ),
+          }
+
+          return ListView.builder(
+            itemCount: viewModel.notifications.length,
+            itemBuilder: (context, index) {
+              final notification = viewModel.notifications[index];
+              return NotificationTile(
+                notification: notification,
+                onDismiss: () =>
+                    viewModel.dismissNotification(notification.id),
+                onTap: () => viewModel.markAsRead(notification.id),
+              );
+            },
+          );
+        },
       ),
     );
   }
