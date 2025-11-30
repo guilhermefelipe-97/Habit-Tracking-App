@@ -3,10 +3,10 @@ class Achievement {
   final String title;
   final String description;
   final int points;
-  final String category; // 'streak', 'completion', 'consistency', 'milestone'
+  final String category;
   bool isUnlocked;
   final DateTime? unlockedAt;
-  final String? icon; // emoji ou nome de ícone
+  final String? icon;
 
   Achievement({
     required this.id,

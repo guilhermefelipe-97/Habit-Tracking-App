@@ -38,14 +38,6 @@ class AuthService {
         message: 'Nenhum usuário logado.',
       );
     }
-
-    // Se você quiser reforçar com senha:
-    // final cred = EmailAuthProvider.credential(
-    //   email: user.email!,
-    //   password: password,
-    // );
-    // await user.reauthenticateWithCredential(cred);
-
     await user.delete();
   }
 }
